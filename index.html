@@ -5,16 +5,45 @@
   <title>Verifica Einstein</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Rubik, sans-serif;
       background-color: #f8f9fc;
       margin: 0;
       padding: 0;
       text-align: center;
     }
-    header {
-      background-color: #3e485b;
+    .header {
+      background-color: #2c3e50;
+      padding: 15px;
       color: white;
-      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+    .header button {
+      background-color: transparent;
+      color: white;
+      border: 1px solid white;
+      padding: 5px 15px;
+      cursor: pointer;
+    }
+    .logo-area {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-area img {
+      height: 30px;
+    }
+    .logo-area span {
+      font-weight: bold;
+      font-size: 16px;
     }
     input[type="text"] {
       width: 300px;
@@ -32,15 +61,54 @@
       cursor: pointer;
       font-weight: bold;
     }
+    .btn:disabled {
+      background-color: #90caf9;
+      cursor: not-allowed;
+    }
+    .check-confirm {
+      display: block;
+      margin: 40px auto 30px auto;
+      font-size: 14px;
+    }
     footer {
       margin-top: 80px;
       color: #999;
       font-size: 12px;
     }
+    .fake-recaptcha {
+      border: 1px solid #d3d3d3;
+      border-radius: 4px;
+      padding: 10px;
+      width: 304px;
+      background: #f9f9f9;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 20px auto;
+      font-family: Arial, sans-serif;
+    }
+    .fake-recaptcha img {
+      margin-left: auto;
+      height: 30px;
+    }
+    .fake-recaptcha label {
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .recaptcha-note {
+      font-family: Arial, sans-serif;
+      color: #666;
+      font-size: 10px;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
   <header>
+    <div class="header">
+      <h1>✔️ Verifica Einstein</h1>
+      <button>NOVA CONSULTA</button>
+    </div>
     <h2>Validação de <strong>Documentação Digital</strong></h2>
   </header>
 
@@ -48,26 +116,48 @@
   <p><strong>CHAVE DE VALIDAÇÃO (OBRIGATÓRIO)</strong></p>
   <input type="text" id="chave" placeholder="Digite a chave de validação">
 
-  <br>
-  <label><input type="checkbox" id="confirmar"> Marque abaixo para continuar</label>
+  <label class="check-confirm">
+    Marque abaixo para continuar
+  </label>
 
-  <br>
-  <button class="btn" onclick="prosseguir()">PRÓXIMO</button>
+  <!-- reCAPTCHA FALSO (visual) -->
+  <div class="fake-recaptcha">
+    <input type="checkbox" id="fake-recaptcha" style="transform: scale(1.5); margin-right: 10px;">
+    <label for="fake-recaptcha">I'm not a robot</label>
+    <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png">
+  </div>
+  <div class="recaptcha-note">Este site é protegido por um reCAPTCHA visual (falso)</div>
+
+  <button class="btn" id="btnProximo" onclick="prosseguir()" disabled>PRÓXIMO</button>
 
   <footer>
     <p>Hospital Israelita Albert Einstein | Todos os direitos reservados</p>
   </footer>
 
   <script>
+    document.getElementById("fake-recaptcha").addEventListener("change", function () {
+      const botao = document.getElementById("btnProximo");
+      botao.disabled = !this.checked;
+    });
+
     function prosseguir() {
       const chave = document.getElementById("chave").value.trim();
-      const marcado = document.getElementById("confirmar").checked;
+      const recaptcha = document.getElementById("fake-recaptcha").checked;
+      const chaveValida = "2365-1349-6171-6423";
 
-      if (chave && marcado) {
-        window.location.href = "resultado.html";
-      } else {
-        alert("Por favor, informe a chave e marque a confirmação.");
+      
+
+      if (!chave || !recaptcha) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;
       }
+
+      if (chave !== chaveValida) {
+        alert("Chave inválida. Verifique e tente novamente.");
+        return;
+      }
+
+      window.location.href = "resultado.html";
     }
   </script>
 </body>
